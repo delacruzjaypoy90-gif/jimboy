@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boss Jimboy v3.0</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background: linear-gradient(135deg, #0a0a0a, #1a0033);
+    color: white;
+    font-family: 'Arial Black', Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: background 1s;
+}
+h1 {
+    font-size: 18vw;
+    color: #00ffff;
+    text-shadow: 0 0 40px #00ffff, 0 0 80px #00ffff;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s;
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}
+h1:active {
+    transform: scale(0.8) rotate(5deg);
+    color: #ffff00;
+    text-shadow: 0 0 60px #ffff00, 0 0 120px #ffff00;
+}
+p {
+    font-size: 22px;
+    text-align: center;
+    margin-bottom: 25px;
+    min-height: 50px;
+    transition: 0.3s;
+}
+.btn-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.btn {
+    padding: 16px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    background: linear-gradient(45deg, #ff00ff, #ff0088);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0 0 20px #ff00ff;
+    transition: 0.2s;
+}
+.btn:active {
+    transform: scale(0.92);
+    box-shadow: 0 0 35px #ff0044;
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    25% { transform: translateX(-12px) rotate(-3deg); }
+    75% { transform: translateX(12px) rotate(3deg); }
+}
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+.shake {
+    animation: shake 0.4s;
+}
+.spin {
+    animation: spin 1s linear infinite;
+}
+.particles {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #ffff00;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: explode 0.8s ease-out forwards;
+}
+@keyframes explode {
+    to {
+        transform: translate(var(--x), var(--y)) scale(0);
+        opacity: 0;
+    }
+}
+</style>
+</head>
+<body>
+
+<h1 id="jimboy" onclick="clickJimboy()">JIMBOY</h1>
+<p id="status">Click mo ko Boss 🔥 Combo: 0</p>
+<div class="btn-group">
+    <button class="btn" onclick="changeColor()">Palit Kulay</button>
+    <button class="btn" onclick="resetJimboy()">Reset Boss</button>
+</div>
+
+<script>
+let colors = ['#00ffff', '#ffff00', '#ff00ff', '#00ff00', '#ff8800', '#ff0088', '#0088ff'];
+let clickCount = 0;
+let combo = 0;
+let lastClickTime = 0;
+let jimboy = document.getElementById('jimboy');
+let status = document.getElementById('status');
+
+function clickJimboy() {
+    let now = Date.now();
+    if(now - lastClickTime < 800) {
+        combo++;
+    } else {
+        combo = 1;
+    }
+    lastClickTime = now;
+    clickCount++;
+    
+    // Create particles
+    createParticles();
+    
+    // Shake effect
+    jimboy.classList.add('shake');
+    setTimeout(() => jimboy.classList.remove('shake'), 400);
+    
+    // Stages
+    if(clickCount < 5) {
+        status.innerText = 'Aray! Click #' + clickCount + ' 😤 Combo x' + combo;
+        jimboy.style.color = '#00ffff';
+    }
+    else if(clickCount < 10) {
+        status.innerText = 'Boss tama na... masakit na 😭 Combo x' + combo;
+        jimboy.style.color = '#ff8800';
+        jimboy.style.textShadow = '0 0 60px #ff8800';
+    }
+    else if(clickCount == 10) {
+        status.innerText = 'JIMBOY MODE: GALIT NA 🔥🔥 COMBO KING!';
+        jimboy.style.color = 'red';
+        jimboy.style.textShadow = '0 0 100px red, 0 0 150px red';
+        document.body.style.background = 'linear-gradient(135deg, #330000, #660000)';
+        jimboy.classList.add('spin');
+        setTimeout(() => jimboy.classList.remove('spin'), 2000);
+    }
+    else if(clickCount == 20) {
+        status.innerText = 'BOSS LEVEL UNLOCKED 💀💀💀';
+        jimboy.innerText = 'JIMBOY GOD';
+        jimboy.style.fontSize = '22vw';
+        document.body.style.background = 'linear-gradient(135deg, #000, #440044)';
+    }
+    else {
+        status.innerText = 'RAGE x' + clickCount + '! Di ka naawa Boss! 💀 Combo x' + combo;
+    }
+}
+
+function changeColor() {
+    let randomColor = colors[Math.floor(Math.random() * colors.length)];
+    jimboy.style.color = randomColor;
+    jimboy.style.textShadow = '0 0 50px ' + randomColor + ', 0 0 100px ' + randomColor;
+    status.innerText = 'Bagong kulay: ' + randomColor.toUpperCase() + ' 💪';
+    
+    if(clickCount < 10) {
+        document.body.style.background = 'linear-gradient(135deg, #0a0a0a, #1a0033)';
+    }
+}
+
+function resetJimboy() {
+    clickCount = 0;
+    combo = 0;
+    jimboy.innerText = 'JIMBOY';
+    jimboy.style.fontSize = '18vw';
+    jimboy.style.color = '#00ffff';
+    jimboy.style.textShadow = '0 0 40px #00ffff';
+    status.innerText = 'Reset na Boss! Click mo ulit 🔥 Combo: 0';
+    document.body.style.background = 'linear-gradient(135deg, #0a0a0a, #1a0033)';
+    jimboy.classList.remove('spin');
+}
+
+function createParticles() {
+    for(let i = 0; i < 8; i++) {
+        let particle = document.createElement('div');
+        particle.className = 'particles';
+        particle.style.left = '50%';
+        particle.style.top = '40%';
+        particle.style.setProperty('--x', (Math.random() - 0.5) * 300 + 'px');
+        particle.style.setProperty('--y', (Math.random() - 0.5) * 300 + 'px');
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 800);
+    }
+}
+</script>
+
+</body>
+</html>
